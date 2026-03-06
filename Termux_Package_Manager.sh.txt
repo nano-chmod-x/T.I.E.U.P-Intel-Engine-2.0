@@ -1,0 +1,76 @@
+#!/bin/bash
+# ==============================================================================
+# T.I.E | Termux Package Management System
+# ------------------------------------------------------------------------------
+# PURPOSE:  Interface for searching, installing, updating, and removing packages.
+# AUTHOR:   Terminal Intelligence Engine
+# ==============================================================================
+
+set -euo pipefail
+
+# --- UI HELPERS ---
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+show_menu() {
+    echo -e "\n${BLUE}========================================================${NC}"
+    echo -e "${BLUE}   T.I.E PACKAGE MANAGER - OPERATIONAL INTERFACE${NC}"
+    echo -e "${BLUE}========================================================${NC}"
+    echo -e "1) Search for Packages"
+    echo -e "2) Install New Package"
+    echo -e "3) Update & Upgrade All Packages"
+    echo -e "4) Remove/Uninstall Package"
+    echo -e "5) List Installed Packages"
+    echo -e "6) Exit"
+    echo -ne "\n[?] Select Operation [1-6]: "
+}
+
+# --- OPERATIONS ---
+
+search_pkg() {
+    read -p "[?] Enter search term: " QUERY
+    echo -e "\n[*] Searching for '$QUERY'..."
+    pkg search "$QUERY"
+}
+
+install_pkg() {
+    read -p "[?] Enter package name to install: " PKG_NAME
+    echo -e "\n[*] Attempting to install '$PKG_NAME'..."
+    pkg install -y "$PKG_NAME"
+}
+
+update_system() {
+    echo -e "\n[*] Synchronizing repositories and upgrading packages..."
+    pkg update && pkg upgrade -y
+}
+
+remove_pkg() {
+    read -p "[?] Enter package name to remove: " PKG_NAME
+    echo -e "\n[*] Attempting to remove '$PKG_NAME'..."
+    pkg uninstall "$PKG_NAME"
+}
+
+list_installed() {
+    echo -e "\n[*] Fetching list of installed packages..."
+    pkg list-installed
+}
+
+# --- MAIN LOOP ---
+
+while true; do
+    show_menu
+    read -r opt
+    case $opt in
+        1) search_pkg ;;
+        2) install_pkg ;;
+        3) update_system ;;
+        4) remove_pkg ;;
+        5) list_installed ;;
+        6) echo -e "\n[!] Terminating Interface. Stay Secure."; exit 0 ;;
+        *) echo -e "\n${RED}[ERROR] Invalid selection.${NC}" ;;
+    esac
+    echo -e "\n[*] Operation Complete. Press Enter to return to menu."
+    read -r
+done
