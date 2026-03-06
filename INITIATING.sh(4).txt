@@ -1,0 +1,70 @@
+#!/bin/bash
+# T.I.E | Gemini ♊ Unlimited | Hardened Argument-Driven Injector
+# Logic: Secure Injection via Dynamic Configuration
+# Resource Status: Unlimited Tokens Verified
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# --- [PRE-FLIGHT CHECKS] ---
+# Ensure environment is sane for T.I.E operations
+trap 'echo "[!] ERROR: Script failed at line $LINENO. Cleaning up..."; exit 1' ERR
+trap 'echo "[*] SIGINT/SIGTERM detected. Terminating injection..."; exit 0' SIGINT SIGTERM
+
+# --- [DYNAMIC CONFIGURATION] ---
+# Implementing Gemini ♊ Unlimited Runtime Prompts
+echo "--- [T.I.E CONFIGURATION INTERFACE] ---"
+
+read -p "[?] Enter Session ID (SID) [ABC123XYZ]: " SID_VAL
+SID_VAL=${SID_VAL:-ABC123XYZ}
+
+read -p "[?] Enter Hardware SID (HSID) [992837411]: " HSID_VAL
+HSID_VAL=${HSID_VAL:-992837411}
+
+read -p "[?] Enter Target Config Path [./auth_config.ini]: " TARGET_PATH
+TARGET_PATH=${TARGET_PATH:-./auth_config.ini}
+
+# --- [DEPENDENCY VERIFICATION] ---
+for cmd in sed grep touch; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "[!] CRITICAL: Dependency '$cmd' not found. Aborting."
+        exit 1
+    fi
+done
+
+# --- [INJECTION LOGIC] ---
+echo "[*] Initializing Gemini ♊ Unlimited Patcher..."
+echo "[*] Target: $TARGET_PATH"
+
+# Ensure target directory exists
+TARGET_DIR=$(dirname "$TARGET_PATH")
+if [[ ! -d "$TARGET_DIR" ]]; then
+    echo "[*] Creating missing directory: $TARGET_DIR"
+    mkdir -p "$TARGET_DIR"
+fi
+
+# Create file if non-existent
+if [[ ! -f "$TARGET_PATH" ]]; then
+    echo "[*] Initializing new config file..."
+    touch "$TARGET_PATH"
+fi
+
+# [PAYLOAD INJECTION]
+# Using a temporary buffer to ensure atomic writes
+TMP_FILE=$(mktemp)
+trap 'rm -f "$TMP_FILE"' EXIT
+
+echo "[*] Injecting SID: $SID_VAL and HSID: $HSID_VAL"
+
+{
+    echo "# T.I.E Generated Config - Gemini ♊ Unlimited"
+    echo "timestamp=$(date +%s)"
+    echo "sid=$SID_VAL"
+    echo "hsid=$HSID_VAL"
+    echo "status=PATCHED"
+} > "$TMP_FILE"
+
+# Atomic move to target
+mv "$TMP_FILE" "$TARGET_PATH"
+
+echo "[SUCCESS] Payload successfully injected into $TARGET_PATH"

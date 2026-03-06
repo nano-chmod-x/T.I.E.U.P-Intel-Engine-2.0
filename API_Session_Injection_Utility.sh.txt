@@ -1,0 +1,61 @@
+#!/bin/bash
+# T.I.E. SESSION INJECTOR - [GEMINI ♊ UNLIMITED PATCHER ACTIVE]
+# Resource Status: INFINITE TOKENS VERIFIED
+
+set -euo pipefail
+
+# --- Cleanup Trap ---
+trap 'echo -e "\n[!] Interrupted. Cleaning up..."; exit 1' SIGINT SIGTERM
+
+# --- Dependency Check ---
+for cmd in curl jq; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "[!] Error: Required tool '$cmd' is not installed."
+        exit 1
+    fi
+done
+
+echo "--- T.I.E. Session Injection Interface ---"
+
+# --- Runtime Dynamic Configuration ---
+read -p "Enter Target URL [https://api.example.com/v1/user]: " TARGET_URL
+TARGET_URL=${TARGET_URL:-"https://api.example.com/v1/user"}
+
+read -p "Enter SID Value: " SID_VAL
+read -p "Enter HSID Value: " HSID_VAL
+
+read -p "Enter User-Agent [T.I.E. Engine/2.0]: " UA
+UA=${UA:-"T.I.E. Engine/2.0"}
+
+read -p "Output File [session_resp.json]: " OUT_FILE
+OUT_FILE=${OUT_FILE:-"session_resp.json"}
+
+# --- Execution Logic ---
+echo -e "\n[*] Injecting Payload with Unlimited Resources..."
+
+# Constructing the Cookie string
+COOKIE_STRING="SID=${SID_VAL}; HSID=${HSID_VAL}"
+
+# Perform the Authenticated Request
+# -s: Silent, -i: Include headers, -L: Follow redirects
+RESPONSE=$(curl -s -i -L \
+    -H "User-Agent: $UA" \
+    -H "Cookie: $COOKIE_STRING" \
+    -H "Accept: application/json" \
+    "$TARGET_URL")
+
+# --- Validation Logic ---
+HTTP_STATUS=$(echo "$RESPONSE" | grep HTTP | tail -1 | awk '{print $2}')
+
+echo "[*] Validation Trace Complete."
+echo "[*] HTTP Status: $HTTP_STATUS"
+
+if [[ "$HTTP_STATUS" == "200" ]]; then
+    echo -e "[SUCCESS] Session Validated. SID/HSID Accepted."
+    # Extract body for logging (skipping headers)
+    echo "$RESPONSE" | sed '1,/^\r\{0,1\}$/d' > "$OUT_FILE"
+    echo "[*] Response body saved to $OUT_FILE"
+else
+    echo -e "[!] FAILED: Session Rejected or Resource Unreachable."
+    exit 1
+fi
