@@ -14,7 +14,7 @@ AI Studio by ♾️🐜♾️(t.i.e.u.p.sh)♊Gemini ♊♾️Unlimited♾️Sta
 
 # Copy && Paste into Termux Terminal 
 ```
-git clone 
+git clone https://github.com/nano-chmod-x/T.I.E.U.P-Intel-Engine-2.0.git
 ```
 # Start Up Command is Below  
 ```
