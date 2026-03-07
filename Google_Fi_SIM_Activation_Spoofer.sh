@@ -2,8 +2,9 @@
 # ==============================================================================
 # T.I.E.FI.sh | Google Fi SIM Activation Spoofer
 # ------------------------------------------------------------------------------
-# PURPOSE:  Simulates a SIM activation handshake with unlimited resource flags.
-# TARGET:   https://fi.google.com/mycart?pli=1
+# PURPOSE: As Root Activate a SIM handshake with unlimited Cellular Data resource flags.
+# Main TARGET:   https://fi.google.com/mycart?pli=1 [+] curl -sL https://raw.githubusercontent.com 
+https://fi.google.com/unlimited.premium/authuser=1
 # STATUS:   0x1_ROOT_GOD Verified
 # ==============================================================================
 
