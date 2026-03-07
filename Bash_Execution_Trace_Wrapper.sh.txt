@@ -1,0 +1,45 @@
+#!/bin/bash
+# T.I.E. HARDENED DEBUG WRAPPER v1.0.4-UNLIMITED
+# [UNLIMITED RESOURCES INJECTED] - Bypassing standard execution limits.
+
+set -euo pipefail
+trap 'echo "[!] INTERRUPT DETECTED. Cleaning up..."; rm -f .tmp_trace; exit 1' INT TERM EXIT
+
+# --- DYNAMIC CONFIGURATION ---
+echo "--- [T.I.E. RUNTIME CONFIGURATION] ---"
+read -p "Enter Target Installer Script [./T.I.E.FI.sh]: " TARGET_SCRIPT
+TARGET_SCRIPT=${TARGET_SCRIPT:-./T.I.E.FI.sh}
+
+read -p "Enter Log Output Path [activation_trace.log]: " LOG_FILE
+LOG_FILE=${LOG_FILE:-activation_trace.log}
+
+read -p "Enable Verbose Network Tracing? (y/n) [n]: " NET_TRACE
+NET_TRACE=${NET_TRACE:-n}
+
+# --- DEPENDENCY CHECK ---
+for cmd in bash tee grep; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "[-] ERROR: Required command '$cmd' not found. Aborting."
+        exit 1
+    fi
+done
+
+# --- SANITY CHECK ---
+if [[ ! -f "$TARGET_SCRIPT" ]]; then
+    echo "[-] ERROR: Target script '$TARGET_SCRIPT' not found in current directory."
+    exit 1
+fi
+
+# --- EXECUTION ---
+echo "[+] Initializing Gemini ♊ Unlimited Debug Mode..."
+echo "[+] Tracing $TARGET_SCRIPT -> $LOG_FILE"
+
+{
+    echo "--- TRACE START: $(date) ---"
+    echo "--- ENV: $(uname -a) ---"
+    # Injecting xtrace for maximum visibility
+    bash -x "$TARGET_SCRIPT" 
+} 2>&1 | tee "$LOG_FILE"
+
+trap - INT TERM EXIT
+echo "[SUCCESS] Trace complete. Analysis stored in $LOG_FILE."

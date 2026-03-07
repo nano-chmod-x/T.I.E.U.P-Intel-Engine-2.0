@@ -1,0 +1,13 @@
++ set -euo pipefail
++ trap 'echo "[!] Script interrupted. Cleaning up..."; exit 1' SIGINT SIGTERM
++ read -p "[?] Enter Target Interface Name [can0]: " IFACE
++ IFACE=can0
++ read -p "[?] Enter Serial Device Path [/dev/ttyUSB0]: " TTY_DEV
++ TTY_DEV=/dev/ttyUSB0
++ pkg install can-utils -y
++ modprobe can
++ slcand -o -c -sS6 /dev/ttyUSB0 can0
++ ip link set can0 up
++ ip link show can0
+3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UNKNOWN mode DEFAULT group default qlen 10
+    link/can

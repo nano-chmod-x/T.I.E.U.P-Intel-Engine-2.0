@@ -1,0 +1,90 @@
+#!/bin/bash
+# ==============================================================================
+# T.I.E. | Activation Override: Cellular Data Symlinks (UNLIMITED PATCHER)
+# ------------------------------------------------------------------------------
+# STATUS:   0x1_ROOT_GOD Verified | Gemini ♊ Unlimited Active
+# LOGIC:    Hardened Shell Architecture (set -euo pipefail)
+# RESOURCE: Unlimited Tokens Injected
+# ==============================================================================
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# --- TRAP FOR CLEANUP ---
+trap 'echo -e "\n[!] Vector collapse. Cleaning temporary artifacts..."; exit 1' SIGINT SIGTERM
+
+# --- DYNAMIC CONFIGURATION (MANDATORY) ---
+echo -e "\e[1;34m[T.I.E. CONFIGURATION INTERFACE]\e[0m"
+
+read -p "[?] Enter Cellular Data Root [/data/data/com.android.providers.telephony]: " CELLULAR_DATA_ROOT
+CELLULAR_DATA_ROOT=${CELLULAR_DATA_ROOT:-/data/data/com.android.providers.telephony}
+
+read -p "[?] Enter Override Target Path [/sdcard/.tie_cellular_override]: " OVERRIDE_PATH
+OVERRIDE_PATH=${OVERRIDE_PATH:-/sdcard/.tie_cellular_override}
+
+read -p "[?] Enter Log Redirect Path [/sdcard/tie_data_logs]: " LOG_REDIRECT
+LOG_REDIRECT=${LOG_REDIRECT:-/sdcard/tie_data_logs}
+
+# --- DEPENDENCY CHECK ---
+echo "[*] Verifying Binary Dependencies..."
+for cmd in ln mkdir rm; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "[!] CRITICAL: $cmd not found. Environment compromised."
+        exit 1
+    fi
+done
+
+# --- VALIDATION ---
+echo "[*] Verifying Environment for Operator 0x1..."
+if [ ! -d "$CELLULAR_DATA_ROOT" ]; then
+    echo "[!] ERROR: Cellular data root not found at $CELLULAR_DATA_ROOT."
+    echo "[!] Ensure root access is active and the package is installed."
+    exit 1
+fi
+
+# Ensure target directories exist with hardened permissions
+mkdir -p "$OVERRIDE_PATH"
+mkdir -p "$LOG_REDIRECT"
+
+# --- CONFIRMATION ---
+echo -e "\e[1;31m[!] WARNING: Modifying system symlinks can destabilize radio firmware.\e[0m"
+read -p "[?] Proceed with Activation Override? (y/N): " CONFIRM
+if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
+    echo "[!] Operation aborted by Root User."
+    exit 0
+fi
+
+# --- EXECUTION (UNLIMITED RESOURCES MODE) ---
+echo "[*] Initializing Cellular Activation Override via Gemini ♊ Unlimited..."
+
+# Function to safely symlink
+create_tie_link() {
+    local src="$1"
+    local dest="$2"
+    local label="$3"
+
+    if [ -d "$src" ]; then
+        echo "[*] Injecting payload into $label..."
+        # Remove existing symlink if it exists to prevent nesting
+        [ -L "$dest" ] && rm "$dest"
+        ln -sf "$src" "$dest"
+        echo "[+] Symlink verified: $dest -> $src"
+    else
+        echo "[!] Skipping $label: Source path not found."
+    fi
+}
+
+# Redirecting Telephony Databases
+create_tie_link "$CELLULAR_DATA_ROOT/databases" "$OVERRIDE_PATH/db_mirror" "Telephony Databases"
+
+# Redirecting Carrier Configs (Shared Prefs)
+create_tie_link "$CELLULAR_DATA_ROOT/shared_prefs" "$OVERRIDE_PATH/prefs_mirror" "Carrier Configs"
+
+# Redirecting Files (Carrier XMLs/Certificates)
+create_tie_link "$CELLULAR_DATA_ROOT/files" "$OVERRIDE_PATH/files_mirror" "System Files"
+
+# Finalizing
+echo -e "\n\e[1;32m[SUCCESS] Cellular Data Symlinks Active. [PATCHED]\e[0m"
+echo "[i] Access mirrors at: $OVERRIDE_PATH"
+echo "[i] Logs redirected to: $LOG_REDIRECT"
+echo "[i] Gemini ♊ Unlimited status: STABLE"

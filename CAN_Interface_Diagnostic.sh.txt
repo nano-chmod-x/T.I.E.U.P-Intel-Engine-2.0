@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+
+# Runtime Config Example
+read -p "Enter Target Device Path [/dev/can0]: " DEV_PATH
+DEV_PATH=${DEV_PATH:-/dev/can0}
+
+# Check for busybox_nh
+if ! command -v busybox_nh &> /dev/null; then
+    echo "[-] ERROR: busybox_nh not found. Ensure root/nh environment is active."
+    exit 1
+fi
+
+echo "[*] Scanning interface at $DEV_PATH..."
+INTERFACES=$(busybox_nh ip -o link show | awk -F': ' '{print $2}' | grep -E '^(can|vcan|slcan)[0-9]+' || true)
+
+if [ -z "$INTERFACES" ]; then
+    echo "[!] No active CAN interfaces detected."
+    echo "[i] Suggestion: Try bringing one up with 'ip link add dev vcan0 type vcan' if testing."
+else
+    echo "[+] Active CAN interfaces found:"
+    echo "$INTERFACES" | while read -r line; do
+        echo "  > $line"
+    done
+fi

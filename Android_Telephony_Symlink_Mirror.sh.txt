@@ -1,0 +1,11 @@
++ set -euo pipefail
++ trap 'echo -e "\n[!] Vector collapse. Aborting..."; exit 1' SIGINT SIGTERM
++ read -p '[?] Enter Cellular Data Root [/data/data/com.android.providers.telephony]: ' CELLULAR_DATA_ROOT
++ CELLULAR_DATA_ROOT=/data/data/com.android.providers.telephony
++ command -v ln
++ mkdir -p /sdcard/.tie_cellular_override
++ [[ y =~ ^[Yy]$ ]]
++ create_tie_link /data/data/com.android.providers.telephony/databases /sdcard/.tie_cellular_override/db_mirror 'Telephony Databases'
++ '[' -d /data/data/com.android.providers.telephony/databases ']'
++ ln -sf /data/data/com.android.providers.telephony/databases /sdcard/.tie_cellular_override/db_mirror
++ echo '[SUCCESS] Cellular Data Symlinks Active.'

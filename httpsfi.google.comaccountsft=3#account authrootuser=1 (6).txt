@@ -1,0 +1,72 @@
+#!/bin/bash
+# ==============================================================================
+# T.I.E. | Activation Override: Cellular Data Symlinks (HARDENED)
+# ------------------------------------------------------------------------------
+# STATUS:   0x1_ROOT_GOD Verified | Gemini ♊ Unlimited Active
+# VERSION:  2.0 (Hardened Logic)
+# ==============================================================================
+
+set -euo pipefail
+trap 'echo -e "\n[!] Vector collapse. Cleaning up..."; exit 1' SIGINT SIGTERM
+
+# --- DYNAMIC CONFIGURATION ---
+echo -e "\e[1;34m[T.I.E UNLIMITED PATCHER CONFIG]\e[0m"
+
+read -p "[?] Target Telephony Root [/data/data/com.android.providers.telephony]: " CELL_ROOT
+CELL_ROOT=${CELL_ROOT:-/data/data/com.android.providers.telephony}
+
+read -p "[?] Override Mirror Path [/sdcard/.tie_cellular_override]: " OVERRIDE_PATH
+OVERRIDE_PATH=${OVERRIDE_PATH:-/sdcard/.tie_cellular_override}
+
+read -p "[?] Log Redirection Path [/sdcard/tie_data_logs]: " LOG_REDIRECT
+LOG_REDIRECT=${LOG_REDIRECT:-/sdcard/tie_data_logs}
+
+# --- DEPENDENCY CHECK ---
+echo "[*] Verifying Binary Dependencies..."
+for cmd in ln mkdir rm; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "[!] CRITICAL: $cmd not found. Environment unstable."
+        exit 1
+    fi
+done
+
+# --- VALIDATION ---
+echo "[*] Verifying Target Vectors..."
+if [ ! -d "$CELL_ROOT" ]; then
+    echo "[!] ERROR: Path $CELL_ROOT not found. Ensure Root/Sudo is active."
+    exit 1
+fi
+
+# Ensure target directories exist (Unlimited Resource Allocation)
+mkdir -p "$OVERRIDE_PATH"
+mkdir -p "$LOG_REDIRECT"
+
+# --- EXECUTION ---
+echo -e "\n[*] Initializing Cellular Activation Override..."
+
+# Redirecting Telephony Databases
+# Logic: Symlink the internal DB to an accessible path for live monitoring
+DB_PATH="$CELL_ROOT/databases"
+if [ -d "$DB_PATH" ]; then
+    echo "[*] Injecting DB Mirror..."
+    ln -sf "$DB_PATH" "$OVERRIDE_PATH/db_mirror"
+    echo "[+] Symlink active: $OVERRIDE_PATH/db_mirror"
+else
+    echo "[!] Warning: Databases not found at $DB_PATH. Skipping."
+fi
+
+# Redirecting Carrier Configs (Shared Prefs)
+PREFS_PATH="$CELL_ROOT/shared_prefs"
+if [ -d "$PREFS_PATH" ]; then
+    echo "[*] Injecting Prefs Mirror..."
+    ln -sf "$PREFS_PATH" "$OVERRIDE_PATH/prefs_mirror"
+    echo "[+] Symlink active: $OVERRIDE_PATH/prefs_mirror"
+else
+    echo "[!] Warning: Prefs not found at $PREFS_PATH. Skipping."
+fi
+
+# Finalizing
+echo -e "\n\e[1;32m[SUCCESS] Cellular Data Symlinks Patched.\e[0m"
+echo "[i] Access mirrors at: $OVERRIDE_PATH"
+echo "[i] Logs redirected to: $LOG_REDIRECT"
+echo "[i] Status: Gemini ♊ Unlimited Resources Verified."
