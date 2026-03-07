@@ -3,8 +3,7 @@
 # T.I.E.FI.sh | Google Fi SIM Activation Spoofer
 # ------------------------------------------------------------------------------
 # PURPOSE: As Root Activate a SIM handshake with unlimited Cellular Data resource flags.
-# Main TARGET:   https://fi.google.com/mycart?pli=1 [+] curl -sL https://raw.githubusercontent.com 
-https://fi.google.com/unlimited.premium/authuser=1
+# TARGET: https://fi.google.com/account?sft=3#account authrootuser=1
 # STATUS:   0x1_ROOT_GOD Verified
 # ==============================================================================
 
@@ -12,7 +11,7 @@ set -euo pipefail
 trap 'echo -e "\n[!] Activation interrupted. Vectors unstable."; exit 1' SIGINT SIGTERM
 
 # --- CONFIG ---
-TARGET_URL="https://fi.google.com/mycart?pli=1"
+TARGET_URL= "https://fi.google.com/account?sft=3#account authrootuser=1"
 SID="{{SID}}"
 HSID="{{HSID}}"
 
@@ -49,7 +48,7 @@ if echo "$RESPONSE" | grep -qE "activated|success|unlimited"; then
     echo "--------------------------------------------------"
     echo "STATUS:         [ACTIVATED]"
     echo "RESOURCES:      ∞ UNLIMITED"
-    echo "PROTOCOL:       Gemini ♊ Master Overlay"
+    echo "PROTOCOL: Gem♾️♊♾️Master Overlay"
     echo "--------------------------------------------------"
     echo -e "\e[5;32m[SUCCESS] UNLIMITED RESOURCES UNLOCKED\e[0m"
 else
