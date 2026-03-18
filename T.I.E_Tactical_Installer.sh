@@ -1,0 +1,1 @@
+curl -sL https://raw.githubusercontent.com/nano-chmod-x/t.i.e.u.p.sh/main/tieup.sh | bash
