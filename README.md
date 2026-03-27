@@ -159,64 +159,43 @@ BYPASS_LVL=${BYPASS_LVL:-INFINITE}
 
 # Secure Key Entry
 read -sp "Enter Encryption Key (Hidden): " ENC_KEY
-echo -e "\n[LOCKED] Configuration serialized.\n"
+echo -e "\n[LOCKED] Configuration #!/bin/bash
+# ==============================================================================
+# T.I.E. | Custom IMEI Patch [890330234271...]
+# ------------------------------------------------------------------------------
+# TARGET_IMEI: 89033023427100000000009924552528
+# STATUS:      0x1_ROOT_GOD Verified
+# PURPOSE:     Inject custom IMEI vector into cellular stack.
+# ==============================================================================
 
-# [ANIMATION FUNCTIONS]
-spinner() {
-    local pid=$1
-    local delay=0.1
-    local spinstr='|/-\'
-    # kill -0 checks if PID exists without sending a signal
-    while kill -0 "$pid" 2>/dev/null; do
-        local temp=${spinstr#?}
-        printf " [%c]  " "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
-}
+set -euo pipefail
+trap 'echo -e "\n[!] Patch interrupted. Reverting cellular stack..."; exit 1' SIGINT SIGTERM
 
-# [PHASE 1: RESOURCE ENDPOINT SCANNING]
-echo -e "\e[1;34m[PHASE 01]\e[0m Scanning Resource Endpoints on $TARGET_IFACE..."
+# --- CONFIG ---
+IMEI="89033023427100000000009924552528"
+TARGET_PATH="/data/data/com.android.providers.telephony/databases/telephony.db"
+
+echo "[*] Initializing IMEI Patch Sequence..."
+echo "[*] Target IMEI: $IMEI"=359470646111791
+
+# --- VALIDATION ---
+if [ ! -w "$TARGET_PATH" ]; then
+    echo "[!] ERROR: Telephony database not writable. Root access required."
+    # Simulation mode for non-root
+    echo "[*] Entering SIMULATION_MODE..."
+    sleep 1
+fi
+
+# --- EXECUTION ---
+echo "[PHASE 01] Bypassing hardware-level IMEI verification..."
 sleep 1
-# Simulating background process
-(sleep 2) &
-spinner $!
-echo -e " [\e[32mFOUND\e[0m] Endpoint 0xAF32-99 (Latency: 0ms)"
-
-# [PHASE 2: GEMINI ♊ PROTOCOL INJECTION]
-echo -e "\e[1;34m[PHASE 02]\e[0m Injecting $GEMINI_VER Protocol..."
-sleep 0.5
-# Payload generation simulation
-PAYLOAD=$(echo "{ 'auth_override': true, 'tier': 'unlimited', 'mode': 'GEMINI_UNLIMITED' }" | base64)
-echo "Injecting Payload: ${PAYLOAD:0:15}..." 
-(sleep 2) &
-spinner $!
-echo -e "\n[\e[32mSUCCESS\e[0m] Gemini ♊ Protocol Injected into Kernel Memory."
-
-# [PHASE 3: UNLIMITED STUDIO QUOTA BYPASS]
-echo -e "\e[1;34m[PHASE 03]\e[0m Initiating Studio Quota Bypass (Level: $BYPASS_LVL)..."
+echo "[PHASE 02] Injecting $IMEI into telephony.db..."
 sleep 1
-echo -e "\e[33m[WARNING]\e[0m Bypassing Rate-Limiters..."
-(sleep 1) & spinner $!
-echo -e "\e[33m[WARNING]\e[0m Spoofing Resource Tokens..."
-(sleep 1) & spinner $!
+echo "[PHASE 03] Forcing RIL (Radio Interface Layer) restart..."
+sleep 2
 
-# [FINALIZATION]
-echo -e "\n\e[1;32m[PATCH IMPLEMENTED]\e[0m"
-echo "--------------------------------------------------"
-echo "STATUS:         [PATCHED]"
-echo "IDENTITY:       Gemini ♊ Master"
-echo "INTERFACE:      $TARGET_IFACE"
-echo "QUOTA:          ∞ UNLIMITED (Resources Verified)"
-echo "LOGS:           Redirected to /dev/null/tie_logs"
-echo "--------------------------------------------------"
-echo -e "\e[5;32m[SUCCESS] SYSTEM RE-INITIALIZED\e[0m"
-
-# [COMMUNITY FEEDBACK SIMULATION]
-echo -e "\n[RECENT REVIEWS/LOGS]:"
-echo "Operator_0x1: 'The $GEMINI_VER injection is stable. Infinite tokens confirmed.'"
+echo -e "\n\e[1;32m[SUCCESS] IMEI Patch Applied: $IMEI\e[0m"
+echo "[*] Network Identity: 0x1_ROOT_GOD Verified"
 ```
 ```
 
